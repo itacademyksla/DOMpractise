@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http - equiv = "Content-Type" content = "text/html; charset = UTF-8">
+<title>
+!!!--Калькулятор на JavaScript--!!! 
+</title>
+</head>
+<body>
+Калькулятор на JavaScript
+<br>
+При нажатии на равно, считает с помощью eval.<br>
+А верхний авто через ручной код. 
+
+<script>
+	var operatsii = {'+': "плюс", '-': "минус", '*': "умножить", '/': "делить"};
+	//var operatsiiprioritet = {'*': "умножить", '/': "делить"};
+	var str;
+	var strnew;
+	var umnoper;
+	var deloper;
+	var pozitsiyaprioroper;
+	var begchislo;
+	var endchislo;
+	var prioroper;
+	var temprez;
+	var rezimp1;
+	var rezultat = 0;
+	var tempoper = '+';
+	var poslChislo;
+	var poslOper;
+	var statusR = 0;
+	var probtemp;
+	
+	function chistka() {
+	var chist1 = document.getElementById('input1');
+	var chist2 = document.getElementById('input2');
+	var chist3 = document.getElementById('input3');
+	var chist1rez = document.getElementById('input1rez');
+	var chist2rez = document.getElementById('input2rez');
+		chist1.value = '';
+		chist2.value = '';
+		chist3.value = '';
+		chist1rez.value = '';
+		chist2rez.value = '';	
+		statusR = 0;
+	} 
+
+	function nazad() {
+		var znach = document.getElementById('input1');
+			znach.value = znach.value.substr(0,znach.value.length - 1);
+	}
+
+	function ravno(){
+		var rav = document.getElementById('input1')
+		var  temp = rav.value;
+		if (temp[temp.length - 1] in operatsii == true){
+			getPoslOperChislo();
+		}
+		
+		if (statusR == 0) {
+			var rav = document.getElementById('input1')
+			var rav2 = document.getElementById('input1rez')
+			rav2.value = eval(rav.value);
+			getPoslOperChislo();
+			statusR = 1;
+			var rav1 = document.getElementById('input1');
+			var rav2 = document.getElementById('input2');
+			var rav4 = document.getElementById('input2rez')
+			rav1.value = rav4.value;
+			rav2.value = rav4.value;
+		} else {
+			var rav = document.getElementById('input2rez')
+			var poslCh = endchislo.substring(1,endchislo.length);
+			var operRezult;
+			if (rav.value < 0){
+				operRezult = '-';
+			}else{
+				operRezult = '+';
+			}
+			var chisloRezult = rav.value.replace(operRezult,'');
+			if (operRezult == '-') {
+					chisloRezult = 0 - Number(chisloRezult);
+			} else {
+					chisloRezult = Number(chisloRezult);
+			}
+			
+			if (poslOper == '+') {
+				rav.value=chisloRezult + Math.abs(poslCh)
+			}
+			if (poslOper == '-') {
+				rav.value = chisloRezult-Math.abs(poslCh)
+			}	
+			if (poslOper == '*') {
+				rav.value=chisloRezult * Math.abs(poslCh)
+			}
+			if (poslOper == '/') {
+				rav.value = chisloRezult / Math.abs(poslCh)
+			}
+		var rav1 = document.getElementById('input1');
+		var rav2 = document.getElementById('input2');
+		var rav4 = document.getElementById('input2rez')
+			rav1.value = rav4.value;
+			rav2.value = rav4.value;
+			
+		}
+		
+	}
+	
+	function getPoslOperChislo(){
+		var vedentext = document.getElementById('input1')
+		var  temp = vedentext.value;
+		
+		if (temp[temp.length - 1] in operatsii == true){
+			for (var e = temp.length-1;  temp[e] in operatsii != 1 && e>-1; e--){
+				endchislo = e;
+			}	
+			temp = vedentext.value.substring(e-1, vedentext.value.length);
+			poslChislo = temp.substring(0,temp.length - 1);
+			poslOper = temp[temp.length-1]; 
+			endchislo = poslOper+poslChislo;
+			var veden = document.getElementById('input3')
+				veden.value = endchislo;
+				statusR=1;
+		} else {
+			for (var e = vedentext.value.length;  str[e] in operatsii != 1 && e>-1; e--){
+				endchislo = e;
+			}	
+			endchislo = vedentext.value.substring(e, vedentext.value.length);
+			poslOper = endchislo.substring(0,1);
+			poslChislo = endchislo.replace(poslChislo,'');
+			var veden = document.getElementById('input3')
+				veden.value = endchislo;
+		}
+		
+	}	
+		
+	function dobavit(znachknopka) {
+		var vedentext = document.getElementById('input1');
+		//фильтр для первой позиции 
+		if (vedentext.value == '' && (znachknopka == '+' || znachknopka == '*' || znachknopka == '/')){
+			znachknopka = '';
+		}
+		//фильтр для вставления последней операций
+		if (znachknopka in operatsii == 1 && vedentext.value.substr(vedentext.value.length - 1,vedentext.value.length + 1) in operatsii == 1){
+			vedentext.value = vedentext.value.substr(0,vedentext.value.length - 1) + znachknopka;
+			statusR=0;
+		}
+		
+		else {
+			vedentext.value = vedentext.value + znachknopka;
+			statusR=0;
+		}
+		
+		//не вызываем строковую функцию до ввода последного числа		
+		if (znachknopka == '+' || znachknopka == '-' || znachknopka == '*' || znachknopka == '/'){
+			znachknopka = znachknopka;
+		} else {
+			str = vedentext.value;
+			
+			//Вызов функции для работы с приоритетными операциями
+			opertemp1 = '*';
+			opertemp2 = '/';
+			strchanche(str);
+			var vedentext = document.getElementById('input2')
+				vedentext.value = rezimp1;
+			
+			//вызов функции простых операций
+			rezultat = 0;
+			tempoper = '+';
+			if (rezimp1[0] == '-'){
+				rezimp1 = '0' + rezimp1;
+			}
+			calcplusminus(rezimp1);
+			var vedentext1=document.getElementById('input2rez')
+				vedentext1.value=rezultat;
+				probtemp = rezultat;
+		} 
+	}
+
+	function strchanche(str) {
+		var tempcheck = -1;
+		if (str.length > 1){
+			while (tempcheck <= str.length){
+				tempcheck++;
+				str = strnew || str;
+				changestrnotprioroper(str);
+			}
+		} else {
+			strnew = str;
+		}
+		str = strnew;
+		rezimp1 = str;
+		strnew = '';
+		}
+	
+	function changestrnotprioroper(strch){
+		var str = strch;
+		umnoper = str.indexOf(opertemp1);
+		deloper = str.indexOf(opertemp2);
+		if (umnoper > 0 && deloper < 0) { 
+			pozitsiyaprioroper = umnoper;
+		} 
+		if (umnoper > 0 && umnoper < deloper) { 
+			pozitsiyaprioroper = umnoper;
+		} 
+		if (deloper > 0 && umnoper < 0) { 
+			pozitsiyaprioroper = deloper;
+		} 
+		if (deloper > 0 && deloper < umnoper) {
+			pozitsiyaprioroper = deloper;
+		} 
+		if (deloper < 0 && umnoper < 0) { 
+			pozitsiyaprioroper = -1;
+			strnew = str;
+		} 
+		if (pozitsiyaprioroper > 0) {	
+			begend(pozitsiyaprioroper);
+		}	
+		
+		function begend(pozit){
+			pozitsiyaprioroper = pozit;
+			if (pozitsiyaprioroper > -1){
+				for (var i = pozitsiyaprioroper - 1;  str[i] in operatsii != 1 && i > -1; i--){
+					begchislo = i;
+				}
+				for (var e = pozitsiyaprioroper + 1;  str[e] in operatsii != 1 && e < str.length; e++){
+					endchislo = e;
+				}	
+				begchislo = str.substring(i + 1,pozitsiyaprioroper);
+				endchislo = str.substring(pozitsiyaprioroper + 1, e);
+				prioroper = str.substring(pozitsiyaprioroper,pozitsiyaprioroper + 1);
+				if (prioroper == '*') {
+					temprez = Number(begchislo) * Number(endchislo)
+				} 
+				if (prioroper == '/') {
+					temprez = Number(begchislo) / Number(endchislo)
+				}
+				str = str.replace(begchislo + prioroper + endchislo, temprez);
+				strnew = str;
+			} 
+		}
+	}
+	
+	function calcplusminus(str){
+		var operplus = str.indexOf('+');
+		var operminus = str.indexOf('-');
+		var pozition;
+		for (var i = 0;  str[i] in operatsii != true && i <= str.length; i++){
+			pozition = i;
+		}
+		begchislo = str.substring(0, pozition + 1);
+		if (tempoper == '+'){
+			rezultat = Number(rezultat) + Number(begchislo);
+			tempoper = str[pozition + 1];
+		} else { 
+			rezultat = Number(rezultat) - Number(begchislo);
+			tempoper = str[pozition + 1];
+		}
+		str=str.substring(pozition+2,str.length);
+		if (str.length>0){
+		calcplusminus(str);
+		}
+	}
+</script>
+
+
+
+<br><br>
+Последняя операция:<br>
+<input type="text" value="" id="input3" size="15">
+<br><br>
+    <table border="1" cellspacing="10" cellpadding="5">
+        <tbody>
+		<tr height="30">
+			<td colspan="3">
+			<input type="text" value="" id="input2" size="12">
+			</td>
+			<td>
+			<input type="text" value="" id="input2rez" size="3">
+			</td>
+		</tr>
+		<tr height="30">
+			<td colspan="3">
+			<input type="text" value="" id="input1" size="12">
+			</td>
+			<td>
+			<input type="text" value="" id="input1rez" size="3">
+			</td>
+		</tr>
+		
+		<tr>
+            <td><center><input type="submit" value="←" onclick="nazad()"></center></td>
+            <td colspan="2"><center><input type="submit" value="C" onclick="chistka()"></center></td>
+            <td><center><input type="submit" value="÷" onclick="dobavit('/')"></center></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="7" onclick="dobavit('7')"></td>
+            <td><input type="submit" value="8" onclick="dobavit('8')"></td>
+            <td><input type="submit" value="9" onclick="dobavit('9')"></td>
+            <td><center><input type="submit" value="*" onclick="dobavit('*')"></center></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="4" onclick="dobavit('4')"></td>
+            <td><input type="submit" value="5" onclick="dobavit('5')"></td>
+            <td><input type="submit" value="6" onclick="dobavit('6')"></td>
+            <td><center><input type="submit" value="−" onclick="dobavit('-')"></center></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="1" onclick="dobavit('1')"></td>
+            <td><input type="submit" value="2" onclick="dobavit('2')"></td>
+            <td><input type="submit" value="3" onclick="dobavit('3')"></td>
+            <td><center><center><input type="submit" value="+" onclick="dobavit('+')"></center></center></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="0" onclick="dobavit('0')"></td>
+            <td colspan="3"><center><input type="submit" value="=" onclick="ravno()"></center></td>
+        </tr>
+    </tbody></table>
+	</body></html>
