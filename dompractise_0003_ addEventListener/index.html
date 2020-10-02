@@ -4,6 +4,8 @@
 		
 	</head>
 	<body>
+		<p id="elem" >text123</p>
+		<p id="elemcolor" style="color:red;"> Текст с красным цветом</p>
 		<input id="button1" type="submit">
 		<input id="button2" type="submit">
 		<input id="button3" type="submit">
@@ -11,21 +13,24 @@
 	let button1 = document.querySelector('#button1');
 	let button2 = document.querySelector('#button2')
 	let button3 = document.querySelector('#button3')
-	
+	let elem = document.querySelector('#elem');
 
 
 	button1.addEventListener('click', function() {
-		alert('1');
+		let elemcol = document.querySelector('#elemcolor');
+			elemcol.style.color = 'green';
 	});
-	button2.addEventListener('click', function() {
-		alert('2');
-	});
+	button2.addEventListener('click', showtextelm);
 	button3.addEventListener('click', funcname);
 
 	function funcname() {
 		alert('Обычная функция');
 	};
-
+    
+    function showtextelm() {
+    	alert(elem.innerHTML);
+    	elem.innerHTML = '<b> Текст поменялся</b>'
+    }
 
 
 
